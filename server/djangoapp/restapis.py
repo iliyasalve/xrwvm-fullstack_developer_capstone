@@ -34,14 +34,31 @@ def get_request(endpoint, **kwargs):
 # request_url = sentiment_analyzer_url+"analyze/"+text
 # Add code for retrieving sentiments
 def analyze_review_sentiments(text):
-    request_url = sentiment_analyzer_url+"analyze/"+text
+    request_url = sentiment_analyzer_url + "analyze/" + text
     try:
-        # Call get method of requests library with URL and parameters
+
         response = requests.get(request_url)
-        return response.json()
+        
+ 
+        response.raise_for_status() 
+
+        json_response = response.json()
+        
+        if 'sentiment' in json_response:
+            return json_response
+        else:
+            print("Sentiment not found in the response")
+            return None  
+    except requests.exceptions.RequestException as req_err:
+        print(f"Request error: {req_err}")
+        return None 
+    except ValueError as json_err:
+        print(f"JSON decoding error: {json_err}")
+        return None  
     except Exception as err:
-        print(f"Unexpected {err=}, {type(err)=}")
-        print("Network exception occurred")
+        print(f"Unexpected error: {err}")
+        return None 
+
 
 # def post_review(data_dict):
 # Add code for posting review
